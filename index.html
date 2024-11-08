@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page</title>
+    <style>
+        *{
+            background-color: cyan;
+
+        }
+        .title-div{
+            text-align: center;
+            text-decoration: underline;
+        }
+        .first-div{
+            display: flex;
+            justify-content: center;
+            color:darkolivegreen;
+            border: 5px solid green;
+            margin: 50px;
+
+        }
+        .submit-reset{
+            display: flex;
+            justify-content: space-evenly;
+            text-align:center;
+            border-radius: 5px;
+            margin-left: 70px;
+            margin-bottom: 20px;
+        }
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="title-div">
+        <h1>Welcome To Currency Converter</h1>
+    </div>
+    <div class="first-div">
+        <form id="loginForm" onsubmit="return validateLogin(event)">
+            <H1>Login Form</H1>
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="username" required><br /><br>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required placeholder="password">
+            <br /><br>
+            <div id="errorMessage" class="error-message">
+                Invalid username or password
+            </div>
+            <div class="submit-reset">
+                <input type="submit" name="" id="">
+                <input type="reset">
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function validateLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Check if credentials match
+            if (username === 'admin' && password === 'admin') {
+                // Redirect to welcome page on successful login
+                window.location.href = 'welcome.html';
+            } else {
+                // Show error message
+                errorMessage.style.display = 'block';
+            }
+            
+            return false;
+        }
+    </script>
+</body>
+</html>

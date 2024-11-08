@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Currency Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+        .converter {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+        .row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        input {
+            width: 150px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 80px;
+            font-size: 16px;
+        }
+        h2 {
+            margin: 0 0 20px 0;
+            color: #333;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="converter">
+        <h2>Currency Converter</h2>
+        <div class="row">
+            <input type="number" id="fromAmount" placeholder="Enter amount">
+            <select id="fromCurrency"></select>
+        </div>
+        <div class="row">
+            <input type="number" id="toAmount" placeholder="Converted amount" readonly>
+            <select id="toCurrency"></select>
+        </div>
+    </div>
+
+    <script>
+        const fromAmount = document.getElementById('fromAmount');
+        const toAmount = document.getElementById('toAmount');
+        const fromCurrency = document.getElementById('fromCurrency');
+        const toCurrency = document.getElementById('toCurrency');
+        let rates = {};
+
+        // Fetch exchange rates and populate dropdowns
+        async function fetchRates() {
+            try {
+                const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+                const data = await response.json();
+                rates = data.rates;
+                
+                // Populate currency dropdowns
+                const currencies = Object.keys(rates).sort();
+                currencies.forEach(currency => {
+                    fromCurrency.add(new Option(currency, currency));
+                    toCurrency.add(new Option(currency, currency));
+                });
+
+                // Set default values
+                fromCurrency.value = 'USD';
+                toCurrency.value = 'EUR';
+            } catch (error) {
+                console.error('Failed to load rates:', error);
+            }
+        }
+
+        // Convert currency
+        function convert() {
+            if (!fromAmount.value) {
+                toAmount.value = '';
+                return;
+            }
+
+            const amount = parseFloat(fromAmount.value);
+            const from = fromCurrency.value;
+            const to = toCurrency.value;
+
+            // Convert through USD as base
+            const amountInUSD = amount / rates[from];
+            const converted = amountInUSD * rates[to];
+            
+            toAmount.value = converted.toFixed(2);
+        }
+
+        // Add event listeners
+        fromAmount.addEventListener('input', convert);
+        fromCurrency.addEventListener('change', convert);
+        toCurrency.addEventListener('change', convert);
+
+        // Initialize
+        fetchRates();
+    </script>
+</body>
+</html>
